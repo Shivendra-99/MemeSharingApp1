@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.textclassifier.TextSelection;
@@ -24,7 +25,6 @@ import com.bumptech.glide.request.RequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
-
 public class MainActivity extends AppCompatActivity {
     Button b1,b2;
     String url1;
@@ -41,12 +41,13 @@ public class MainActivity extends AppCompatActivity {
         loadImage();
     }
     private void loadImage() {
+        RequestQueue queue=Volley.newRequestQueue(this);
         String url ="https://meme-api.herokuapp.com/gimme";
           JsonObjectRequest json= new JsonObjectRequest(Request.Method.GET,url,null ,new Response.Listener<JSONObject>() {
               public void onResponse(JSONObject response) {
                   try {
                        url1=response.getString("url");
-                      Glide.with(MainActivity.this).load(url1).into(image);
+                     Glide.with(MainActivity.this).load(url1).into(image);
                      pro.setVisibility(View.INVISIBLE);
                   } catch (JSONException e) {
                       e.printStackTrace();
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
               }
           });
-        MySingleton.getInstance(this).addToRequestQueue(json);
+          queue.add(json);
+
     }
     public void Share(View view) {
         Intent b=new Intent(Intent.ACTION_SEND);
